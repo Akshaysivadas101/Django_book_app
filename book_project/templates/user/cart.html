@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% if not cart_items %}
+<p>Your cart is empty</p>
+{% else %}
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Book Name</th>
+      <th scope="col">Author Name</th>
+      <th scope="col">Book Price</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in cart_items %}
+
+    <tr>
+      <th scope="row">{{forloop.counter}}</th>
+      <td>{{ book.title }}</td>
+      <td>{{ book.author }}</td>
+      <td>{{ book.price }}</td>
+
+      <td><a href="{% url 'remove_cart' item.id %}" type="submit" class="btn btn-primary">Details</a></td>
+      {% if item.quantity<= item.book.quantity %}
+
+      <td><a href="{% url 'decrease_quantity' item.id %}" >-</a></td>
+      <td><input type="number" name="quantity" value="{{ item.quantity }}">Quantity</td>
+      <td><a href="{% url 'increase_quantity' item.id %}" >+</a></td>
+    </tr>
+    {% endif %}
+
+  </tbody>
+</table>
+
+</body>
+</html>
