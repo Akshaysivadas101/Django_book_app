@@ -1,10 +1,11 @@
 from django.shortcuts import render,redirect
 from .models import Book,Author
-from .forms import BookForm,AuthorForm
+from .forms import *
 from django.core.paginator import Paginator,EmptyPage
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.contrib.auth import authenticate,login,logout
 
 
 #def createBook(request):
@@ -36,7 +37,7 @@ def deleteview(request,book_id):
     book = Book.objects.get(id=book_id)
     if request.method == 'POST':
         book.delete()
-        return redirect('/')
+        return redirect('home')
     return render(request,'admin/deleteview.html',{'book':book})
 
 
@@ -47,7 +48,7 @@ def createBook(request):
         form = BookForm(request.POST,files=request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('/')
+            return redirect('home')
     else:
         form = BookForm()
     return render(request,'admin/book.html',{'form':form,'books':books})
@@ -57,7 +58,7 @@ def Create_Author(request):
         form = AuthorForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('/')
+            return redirect('home')
     else:
         form = AuthorForm()
     return render(request,'admin/author.html',{'form':form})
@@ -68,7 +69,7 @@ def updateBook(request,book_id):
         form = BookForm(request.POST,request.FILES, instance=book)
         if form.is_valid():
             form.save()
-            return redirect('/')
+            return redirect('home')
     else:
         form = BookForm(instance=book)
     return render(request,'admin/updateview.html',{'form':form})
@@ -144,6 +145,43 @@ def Search_book(request):
 #         except:
 #             messages.error(request,'Invalid role')
 #     return render(request,'login.html')
+
+def register(request):
+    if request.method=='POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username= form.cleaned_data.get('username')
+            raw_password= form.cleaned_data.get('password1')
+            user=authenticate(username=username,password=raw_password)
+            login(request,user)
+            return redirect('/')
+    else:
+        form = RegisterForm()
+    return render(request,'admin/register.html',{'form':form})
+
+def logout_view(request):
+    logout(request)
+    return redirect('admin/login')
+
+def user_login(request):
+    if request.method == 'POST':
+        form = LoginForm(request,request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('home/')
+    else:
+        form = LoginForm()
+
+
+
+
+    return render(request, 'admin/login.html', {'form': form})
+
 
 
 

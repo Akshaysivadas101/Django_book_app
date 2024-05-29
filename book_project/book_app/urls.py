@@ -9,8 +9,10 @@ urlpatterns = [
     path('updateview/<int:book_id>/',views.updateBook,name='update'),
     path('deleteview/<int:book_id>/',views.deleteview,name='delete'),
     path('index/',views.index),
-    path('',views.listBook,name='booklist'),
+    path('home/',views.listBook,name='booklist'),
     path('search/',views.Search_book,name='search'),
+    path('',views.user_login,name='user_login'),
+    path("register/",views.register, name ='register'),
     path('user/',include('user_app.urls'))
 
 ]
